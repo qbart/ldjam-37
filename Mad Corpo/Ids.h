@@ -2,9 +2,24 @@
 
 namespace Texture
 {
+
 enum ID
 {
-	ROOM
+	ROOM,
+	ITEMS,
+	CABLE
 };
+
 }
 
+namespace Balloons
+{
+
+enum ID
+{
+	NOT_WORKING,
+	WORKING,
+	NO_CONNECTION
+};
+
+}

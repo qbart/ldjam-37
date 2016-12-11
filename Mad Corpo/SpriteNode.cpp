@@ -2,11 +2,12 @@
 #include "Resources.h"
 
 SpriteNode::SpriteNode(Texture::ID texId) :
+	Node(),
 	m_texId(texId)
 {
 	m_sprite.setTexture(getTexture());
 	auto bounds = m_sprite.getLocalBounds();
-	m_sprite.setOrigin(bounds.width / 2, bounds.height / 2);
+	setOrigin(bounds.width / 2, bounds.height / 2);
 }
 
 SpriteNode::~SpriteNode()

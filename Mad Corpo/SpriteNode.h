@@ -15,8 +15,10 @@ public:
 private:
 	virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 
+protected:
+	sf::Sprite m_sprite;
+
 private:
 	Texture::ID m_texId;
-	sf::Sprite m_sprite;
 };
 

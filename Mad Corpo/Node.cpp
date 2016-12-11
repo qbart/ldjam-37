@@ -2,18 +2,30 @@
 #include <algorithm>
 #include <cassert>
 
-Node::Node()
+Node::Node() :
+	m_visible(true),
+	m_active(true)
 {
 }
-
 
 Node::~Node()
 {
 }
 
+void Node::setVisible(bool visible)
+{
+	m_visible = visible;
+}
+
+void Node::setActive(bool active)
+{
+	m_active = active;
+}
+
 void Node::addChild(Node::Ptr child)
 {
 	child->m_parent = this;
+	child->onAdd();
 	m_children.push_back(std::move(child));
 }
 
@@ -38,10 +50,29 @@ Node::Ptr Node::removeChild(const Node& node)
 	return result;
 }
 
+void Node::removeChildLater(Node * node)
+{
+	m_removalQueue.push_back(node);
+}
+
+void Node::onAdd()
+{
+}
+
 void Node::update(sf::Time dt)
 {
-	updateCurrent(dt);
-	updateChildren(dt);
+	while (!m_removalQueue.empty())
+	{
+		auto child = m_removalQueue.back();
+		m_removalQueue.pop_back();
+		removeChild(*child);
+	}
+
+	if (m_active)
+	{
+		updateCurrent(dt);
+		updateChildren(dt);
+	}
 }
 
 sf::Transform Node::getWorldTransform() const
@@ -75,13 +106,16 @@ void Node::updateChildren(sf::Time dt)
 
 void Node::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	states.transform *= getTransform();
-
-	drawCurrent(target, states);
-
-	for (const Ptr& child : m_children)
+	if (m_visible)
 	{
-		child->draw(target, states);
+		states.transform *= getTransform();
+
+		drawCurrent(target, states);
+
+		for (const Ptr& child : m_children)
+		{
+			child->draw(target, states);
+		}
 	}
 }
 
